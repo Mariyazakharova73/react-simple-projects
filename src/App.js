@@ -1,31 +1,33 @@
 import React from 'react';
 import './index.scss';
+import { Success } from './components/Success';
+import { Users } from './components/Users/index';
+
+// Тут список пользователей: https://reqres.in/api/users
 
 function App() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [users, setUsers] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  function openPopup() {
-    setIsOpen(true);
-  }
-
-  function closePopup() {
-    setIsOpen(false);
-  }
+  React.useEffect(() => {
+    setIsLoading(true);
+    fetch('https://reqres.in/api/users')
+      .then((res) => res.json())
+      .then((res) => {
+        setUsers(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <div className="App">
-      <button className="open-modal-btn" onClick={openPopup}>
-        ✨ Открыть окно
-      </button>
-      <div className={`overlay animated ${isOpen ? 'show' : ''}`}>
-        <div className="modal">
-          <svg onClick={closePopup} height="200" viewBox="0 0 200 200" width="200">
-            <title />
-            <path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" />
-          </svg>
-          <img src="https://media2.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif" />
-        </div>
-      </div>
+      <Users users={users} isLoading={isLoading} />
+      {/* <Success /> */}
     </div>
   );
 }
