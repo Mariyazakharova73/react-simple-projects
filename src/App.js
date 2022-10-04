@@ -1,31 +1,96 @@
-import React from 'react';
 import './index.scss';
+import React from 'react';
+
+const questions = [
+  {
+    title: 'React - это ... ?',
+    variants: ['библиотека', 'фреймворк', 'приложение'],
+    correct: 0,
+  },
+  {
+    title: 'Компонент - это ... ',
+    variants: ['приложение', 'часть приложения или страницы', 'то, что я не знаю что такое'],
+    correct: 1,
+  },
+  {
+    title: 'Что такое JSX?',
+    variants: [
+      'Это простой HTML',
+      'Это функция',
+      'Это тот же HTML, но с возможностью выполнять JS-код',
+    ],
+    correct: 2,
+  },
+];
+
+function Result({ correctAnswer }) {
+  return (
+    <div className="result">
+      <img
+        src={
+          correctAnswer > 0
+            ? 'https://cdn-icons-png.flaticon.com/512/2278/2278992.png'
+            : 'https://cdn-icons-png.flaticon.com/512/742/742752.png'
+        }
+      />
+      <h2>{`Вы отгадали ${correctAnswer} ответа из ${questions.length}`}</h2>
+      <a href="/">
+        <button>Попробовать снова</button>
+      </a>
+    </div>
+  );
+}
+
+function Game({ question, onClickVariant, questionNumber }) {
+  const persent = Math.round((questionNumber / questions.length) * 100);
+  return (
+    <>
+      <div className="progress">
+        <div style={{ width: `${persent}%` }} className="progress__inner"></div>
+      </div>
+      <h1>{question.title}</h1>
+      <ul>
+        {question.variants.map((item, index) => (
+          <li
+            key={item}
+            onClick={() => {
+              onClickVariant(index);
+            }}
+          >
+            {item}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
 
 function App() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [questionNumber, setQuestionNumber] = React.useState(0);
+  const [correctAnswer, setCorrectAnswer] = React.useState(0);
+  const [selected, setSelected] = React.useState('');
 
-  function openPopup() {
-    setIsOpen(true);
+  const question = questions[questionNumber];
+
+  function onClickVariant(index) {
+    setQuestionNumber(questionNumber + 1);
+    if (index === question.correct) {
+      setCorrectAnswer(correctAnswer + 1);
+    }
+    console.log(correctAnswer);
   }
-
-  function closePopup() {
-    setIsOpen(false);
-  }
-
   return (
     <div className="App">
-      <button className="open-modal-btn" onClick={openPopup}>
-        ✨ Открыть окно
-      </button>
-      <div className={`overlay animated ${isOpen ? 'show' : ''}`}>
-        <div className="modal">
-          <svg onClick={closePopup} height="200" viewBox="0 0 200 200" width="200">
-            <title />
-            <path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" />
-          </svg>
-          <img src="https://media2.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif" />
-        </div>
-      </div>
+      {questionNumber !== questions.length ? (
+        <Game
+          question={question}
+          onClickVariant={onClickVariant}
+          questionNumber={questionNumber}
+          selected={selected}
+        />
+      ) : (
+        <Result correctAnswer={correctAnswer} />
+      )}
     </div>
   );
 }
