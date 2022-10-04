@@ -1,13 +1,13 @@
 import React from 'react';
 import './index.scss';
 import { Success } from './components/Success';
-import { Users } from './components/Users/index';
-
-// Тут список пользователей: https://reqres.in/api/users
+import { Users } from './components/Users/Users';
 
 function App() {
   const [users, setUsers] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState('');
+  const [invites, setInvites] = React.useState([]);
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -24,9 +24,31 @@ function App() {
       });
   }, []);
 
+  const onChangeSearchValue = (evt) => {
+    setSearchValue(evt.target.value);
+  };
+
+  const changeInvite = (id) => {
+    if (invites.includes(id)) {
+      //предыдущее значение массива
+      //если id по клику нет в массиве prev, то оставляем пользователя
+      setInvites((prev) => prev.filter((prevId) => prevId !== id));
+    } else {
+      setInvites((prev) => [...prev, id]);
+    }
+  };
+
+  //invites=[1, 5, 8, 9]
   return (
     <div className="App">
-      <Users users={users} isLoading={isLoading} />
+      <Users
+        changeInvite={changeInvite}
+        users={users}
+        isLoading={isLoading}
+        searchValue={searchValue}
+        onChangeSearchValue={onChangeSearchValue}
+        invites={invites}
+      />
       {/* <Success /> */}
     </div>
   );
