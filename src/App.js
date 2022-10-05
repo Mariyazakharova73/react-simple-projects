@@ -8,6 +8,7 @@ function App() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
   const [invites, setInvites] = React.useState([]);
+  const [success, setSuccess] = React.useState(false);
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -35,21 +36,25 @@ function App() {
       setInvites((prev) => prev.filter((prevId) => prevId !== id));
     } else {
       setInvites((prev) => [...prev, id]);
+      setSuccess(true);
     }
   };
 
   //invites=[1, 5, 8, 9]
   return (
     <div className="App">
-      <Users
-        changeInvite={changeInvite}
-        users={users}
-        isLoading={isLoading}
-        searchValue={searchValue}
-        onChangeSearchValue={onChangeSearchValue}
-        invites={invites}
-      />
-      {/* <Success /> */}
+      {success ? (
+        <Success />
+      ) : (
+        <Users
+          changeInvite={changeInvite}
+          users={users}
+          isLoading={isLoading}
+          searchValue={searchValue}
+          onChangeSearchValue={onChangeSearchValue}
+          invites={invites}
+        />
+      )}
     </div>
   );
 }
