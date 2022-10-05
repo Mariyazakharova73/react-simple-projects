@@ -31,20 +31,23 @@ function App() {
 
   const changeInvite = (id) => {
     if (invites.includes(id)) {
-      //предыдущее значение массива
-      //если id по клику нет в массиве prev, то оставляем пользователя
+      //предыдущее значение массива prev
       setInvites((prev) => prev.filter((prevId) => prevId !== id));
     } else {
       setInvites((prev) => [...prev, id]);
-      setSuccess(true);
     }
   };
 
   //invites=[1, 5, 8, 9]
+
+  const onClickSubmit = () => {
+    setSuccess(true);
+  };
+
   return (
     <div className="App">
       {success ? (
-        <Success />
+        <Success count={invites.length} />
       ) : (
         <Users
           changeInvite={changeInvite}
@@ -53,6 +56,7 @@ function App() {
           searchValue={searchValue}
           onChangeSearchValue={onChangeSearchValue}
           invites={invites}
+          onClickSubmit={onClickSubmit}
         />
       )}
     </div>

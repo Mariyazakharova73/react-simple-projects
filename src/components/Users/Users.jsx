@@ -9,6 +9,7 @@ export const Users = ({
   searchValue,
   changeInvite,
   invites,
+  onClickSubmit,
 }) => {
   return (
     <>
@@ -50,7 +51,11 @@ export const Users = ({
             ))}
         </ul>
       )}
-      <button className="send-invite-btn">Отправить приглашение</button>
+      {invites.length > 0 && (
+        <button className="send-invite-btn" onClick={onClickSubmit}>
+          Отправить приглашение
+        </button>
+      )}
     </>
   );
 };
