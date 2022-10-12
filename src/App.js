@@ -1,31 +1,49 @@
 import React from 'react';
+import Collection from './Colection';
+import { useEffect, useState } from 'react';
 import './index.scss';
 
 function App() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [gallery, setGallery] = useState([]);
+  const [searchValur, setSearchvalue] = useState('');
 
-  function openPopup() {
-    setIsOpen(true);
-  }
 
-  function closePopup() {
-    setIsOpen(false);
-  }
+  useEffect(() => {
+    fetch('https://6346c71b9eb7f8c0f88561a0.mockapi.io/gallery')
+      .then((res) => res.json())
+      .then((res) => {
+        setGallery(res);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {});
+  }, []);
 
   return (
     <div className="App">
-      <button className="open-modal-btn" onClick={openPopup}>
-        ✨ Открыть окно
-      </button>
-      <div className={`overlay animated ${isOpen ? 'show' : ''}`}>
-        <div className="modal">
-          <svg onClick={closePopup} height="200" viewBox="0 0 200 200" width="200">
-            <title />
-            <path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" />
-          </svg>
-          <img src="https://media2.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif" />
-        </div>
+      <h1>Моя коллекция фотографий</h1>
+      <div className="top">
+        <ul className="tags">
+          <li className="active">Все</li>
+          <li>Горы</li>
+          <li>Море</li>
+          <li>Архитектура</li>
+          <li>Города</li>
+        </ul>
+        <input className="search-input" placeholder="Поиск по названию" />
       </div>
+      <div className="content">
+        {gallery.map((item, index) => (
+          <Collection key={index} name={item.name} images={item.photos} />
+        ))}
+      </div>
+      <ul className="pagination">
+        <li>1</li>
+        <li className="active">2</li>
+        <li>3</li>
+      </ul>
     </div>
   );
 }
