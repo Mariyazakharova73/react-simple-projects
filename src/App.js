@@ -15,14 +15,14 @@ function App() {
   const [searchValue, setSearchvalue] = useState('');
   const [activeCategory, setActiveCategory] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(
-      `https://6346c71b9eb7f8c0f88561a0.mockapi.io/gallery?${
-        activeCategory ? `category=${activeCategory}` : ''
-      }`
-    )
+
+    const category = activeCategory ? `category=${activeCategory}` : '';
+
+    fetch(`https://6346c71b9eb7f8c0f88561a0.mockapi.io/gallery?page=${page}&limit=3&${category}`)
       .then((res) => res.json())
       .then((res) => {
         setGallery(res);
@@ -33,7 +33,7 @@ function App() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [activeCategory]);
+  }, [activeCategory, page]);
 
   return (
     <div className="App">
@@ -73,9 +73,17 @@ function App() {
         )}
       </div>
       <ul className="pagination">
-        <li>1</li>
-        <li className="active">2</li>
-        <li>3</li>
+        {[...Array(5)].map((_, index) => (
+          <li
+            className={page === index+1 ? 'active' : ''}
+            onClick={() => {
+              setPage(index+1);
+            }}
+            key={index}
+          >
+            {index + 1}
+          </li>
+        ))}
       </ul>
     </div>
   );
