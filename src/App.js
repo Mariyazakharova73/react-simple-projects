@@ -14,18 +14,25 @@ function App() {
   const [gallery, setGallery] = useState([]);
   const [searchValue, setSearchvalue] = useState('');
   const [activeCategory, setActiveCategory] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://6346c71b9eb7f8c0f88561a0.mockapi.io/gallery?${activeCategory ? `category=${activeCategory}`:''}`)
+    setIsLoading(true);
+    fetch(
+      `https://6346c71b9eb7f8c0f88561a0.mockapi.io/gallery?${
+        activeCategory ? `category=${activeCategory}` : ''
+      }`
+    )
       .then((res) => res.json())
       .then((res) => {
         setGallery(res);
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
       })
-      .finally(() => {});
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [activeCategory]);
 
   return (
@@ -55,13 +62,15 @@ function App() {
         />
       </div>
       <div className="content">
-        {gallery
-          .filter((item) => {
-            return item.name.toLowerCase().includes(searchValue.toLocaleLowerCase());
-          })
-          .map((item, index) => (
-            <Collection key={index} name={item.name} images={item.photos} />
-          ))}
+        {isLoading ? (
+          <h2>Идет загрузка...</h2>
+        ) : (
+          gallery
+            .filter((item) => {
+              return item.name.toLowerCase().includes(searchValue.toLocaleLowerCase());
+            })
+            .map((item, index) => <Collection key={index} name={item.name} images={item.photos} />)
+        )}
       </div>
       <ul className="pagination">
         <li>1</li>
